@@ -7,3 +7,4 @@ yarn.lock
 .vscode
 .idea
 firebase.json
+firebase-messaging-sw.js

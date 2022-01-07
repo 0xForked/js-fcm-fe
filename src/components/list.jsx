@@ -15,7 +15,7 @@ export default class UserList extends React.Component {
         })
     }
 
-    onUserCardClicked(user) {
+    onSignIn(user) {
       localStorage.setItem('uuid', user.id)
       const fcmToken = localStorage.getItem('fcm_token') ?? null 
 
@@ -35,7 +35,7 @@ export default class UserList extends React.Component {
         this.state.users
               .map(user =>
                 <div key={user.id} className="p-4 md:w-1/4 sm:w-1/2 w-full">
-                  <a onClick={() => { this.onUserCardClicked(user) }}>
+                  <a onClick={() => { this.onSignIn(user) }}>
                     <div className="border-2 focus:border-blue-200 hover:border-blue-200 border-gray-200 px-4 py-6 rounded-lg">
                       <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="text-indigo-500 w-12 h-12 mb-3 inline-block" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

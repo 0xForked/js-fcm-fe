@@ -1,10 +1,27 @@
 import './App.css'
 import UserList from './components/list'
 import UserDetail from './components/detail'
-
-// import { useState } from 'react'
+import UserNotify from './components/notify'
+import { useState } from 'react'
+import { getFCMToken, onNotifyMessageListener } from './service/firebase'
 
 function App() {
+  const [showNotify, setShowNotify] = useState(false)
+  const [notification, setNotification] = useState({ title: '', body: '' })
+
+  getFCMToken()
+
+  onNotifyMessageListener().then(payload => {
+    if (payload.data.user_id == localStorage.getItem('uuid')) {
+     setShowNotify(true)
+    }
+    
+    setNotification({
+      title: payload.notification.title, 
+      body: payload.notification.body
+    })
+  }).catch(err => console.log('failed: ', err))
+
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">
@@ -12,38 +29,18 @@ function App() {
           <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
             Welcome to <span className='text-blue-500 font-bold animate-pulse'>Simple App</span>
           </h1>
-          <ValidTitle />
+          <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
+            {  (localStorage.getItem('uuid') ?? false)  ? `You are logged in as:` : `Please select user to continue!` }
+          </p>
         </div>
         <div className="flex flex-wrap justify-center -m-4 text-center">
-            <ValidUI />
+          { (localStorage.getItem('uuid') ?? false)  ? <UserDetail /> : <UserList /> }
         </div>
       </div>
+    
+      { showNotify ? <UserNotify title={ notification.title } body={ notification.body }/> : null }
     </section>
   )
-}
-
-function ValidTitle() {
-  if (localStorage.getItem('uuid') ?? false) {
-    return ( 
-      <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-        You are logged in as:
-      </p>
-    )
-  }
-
-  return ( 
-    <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-      Please select user to continue!
-    </p>
-  )
-}
-
-function ValidUI() {
-  if (localStorage.getItem('uuid') ?? false) {
-    return (<UserDetail />)
-  }
-
-  return (<UserList />)
 }
 
 export default App
