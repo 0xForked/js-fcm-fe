@@ -8,6 +8,66 @@
   </head>
   <body>
     <div id="root"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      // let restoreId = RESTOREID 
+      function initFreshChat() {
+        window.fcWidget.init({
+          token: '54dff842-91eb-4ac6-bb88-25ac7a5403f8',
+          host: "https://wchat.freshchat.com",
+          externalId: '1234567',
+          // restoreId: restoreId ? restoreId : null
+        });
+
+        window.fcWidget.user.get(function(resp) {
+          let status = resp && resp.status,
+          data = resp && resp.data;
+
+          
+          let beUUID = localStorage.getItem('uuid')
+          console.log('onget')
+          console.log(status)
+          console.log(data)
+          console.log(beUUID)
+
+
+          axios.post(
+            `http://127.0.0.1:3000/freshchat/${beUUID}`, 
+            { freshchat: data },
+            { headers: { 'Content-Type': 'application/json' } }
+          )
+
+          if (status !== 200) {
+            window.fcWidget.user.setProperties({
+              firstName: "John",              // user's first name
+              lastName: "Doe",                // user's last name
+              email: "john.doe@gmail.com",    // user's email address
+              phone: "8668323090",            // phone number without country code
+              phoneCountryCode: "+1",         // phone's country code
+              plan: "Estate",                 // user's meta property 1
+              status: "Active",               // user's meta property 2
+              "Last Payment": "12th August"   // user's meta property 3
+            });
+            window.fcWidget.on('user:created', function(resp) {
+              var status = resp && resp.status,
+              data = resp && resp.data;
+              console.log('oncreated')
+              console.log(status)
+              console.log(data)
+              if (status === 200) {
+                if (data.restoreId) {
+                  // Update restoreId in your database
+                }
+              }
+            });
+          }
+        });
+      }
+      function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"Freshdesk Messaging-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
+    </script>
+   
+   
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

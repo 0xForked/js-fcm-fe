@@ -2,6 +2,7 @@ import './App.css'
 import UserList from './components/list'
 import UserDetail from './components/detail'
 import UserNotify from './components/notify'
+import FreshChatComponent from './components/freshchat'
 import { useState } from 'react'
 import { getFCMToken, onNotifyMessageListener } from './service/firebase'
 import { Freshchat } from 'reactjs-freshchat';
@@ -44,8 +45,10 @@ function App() {
         { showNotify ? <UserNotify title={ notification.title } body={ notification.body }/> : null }
       </section>
 
+      <FreshChatComponent />
+
       {/* https://github.com/ViniciusTei/reactjs-freshchat */}
-      <Freshchat 
+      {/* <Freshchat 
         token={'54dff842-91eb-4ac6-bb88-25ac7a5403f8'} 
         externalId={ localStorage.getItem('uuid') ??  "john.doe1987"} 
         firstName={"John"}
@@ -59,12 +62,17 @@ function App() {
             foregroundColor: "#ffffff"
           }
         }}
-        onInit={(widget) => {
+        init={(widget) => {
+          widget.user.getUUID().then((resp) => {
+            let uuid = resp && resp.data && resp.data.uuid;
+            console.log(`user id`, widget)
+          });
+
           widget.user.setProperties({
             accountId: "MO4EDX25PW"
           });
         }}
-      />
+      /> */}
     </div>
   )
 }
